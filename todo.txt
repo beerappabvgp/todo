@@ -1,0 +1,2 @@
+1. A form to collect name of the todo 
+2. A button to add the todo 
