@@ -4,64 +4,89 @@ const title = document.getElementById("title");
 const description = document.getElementById("description");
 const todosDiv = document.getElementById("todos");
 
-const todos = [];
+let todos = [];
 let count = 0;
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    console.log(e);
-    // put the todo into array
-    const titleValue = title.value;
-    const descriptionValue = description.value;
-    count += 1
-    const todo = {
-        title: titleValue,
-        description: descriptionValue,
-        id: count,
-    }
-    console.log("todo: ", todo);
-    todos.push(todo);
-    console.log("All todos: ", todos);
-    showTodos();
-});
+let editingTodoId = null;
 
-
+// Show todos on the UI
 const showTodos = () => {
-    todosDiv.innerHTML = "";
-    if(todos.length > 0) {
-        for (let todo of todos) {
+    todosDiv.innerHTML = ""; // Clear the display
+    if (todos.length > 0) {
+        todos.forEach((todo) => {
             const div = document.createElement("div");
             const deleteButton = document.createElement("button");
-            deleteButton.addEventListener("click", deleteTodo(todo.id));
             const updateButton = document.createElement("button");
-            deleteButton.innerText = "delete";
-            updateButton.innerText = "update";
+
+            deleteButton.innerText = "Delete";
+            updateButton.innerText = "Update";
+
+            // Add event listeners
+            deleteButton.addEventListener("click", () => deleteTodo(todo.id));
+            updateButton.addEventListener("click", () => updateTodo(todo.id));
+
             const p = document.createElement("p");
-            p.innerHTML = `${todo.title} ${todo.description}`;
+            p.innerHTML = `${todo.title} - ${todo.description} (ID: ${todo.id})`;
+
             div.appendChild(p);
             div.appendChild(deleteButton);
             div.appendChild(updateButton);
             todosDiv.appendChild(div);
-        }
+        });
     } else {
-       
+        todosDiv.innerHTML = "<p>No todos yet!</p>";
     }
-}
+};
 
+// Add a new todo
+const addTodo = (e) => {
+    e.preventDefault();
+    const titleValue = title.value.trim();
+    const descriptionValue = description.value.trim();
 
+    if (!titleValue || !descriptionValue) {
+        alert("Both title and description are required!");
+        return;
+    }
+
+    if (editingTodoId !== null) {
+        // Update the existing todo
+        const todo = todos.find((t) => t.id === editingTodoId);
+        if (todo) {
+            todo.title = titleValue;
+            todo.description = descriptionValue;
+        }
+        editingTodoId = null;
+        button.innerText = "Add Todo";
+    } else {
+        // Add a new todo
+        count++;
+        todos.push({ id: count, title: titleValue, description: descriptionValue });
+    }
+
+    title.value = "";
+    description.value = "";
+    showTodos();
+};
+
+// Delete a todo
 const deleteTodo = (id) => {
+    todos = todos.filter((todo) => todo.id !== id);
+    showTodos();
+};
 
-}
+// Prepare to update a todo
+const updateTodo = (id) => {
+    const todo = todos.find((t) => t.id === id);
+    if (todo) {
+        title.value = todo.title;
+        description.value = todo.description;
+        editingTodoId = id;
+        button.innerText = "Update Todo";
+    }
+};
 
+// Attach event listener
+form.addEventListener("submit", addTodo);
 
+// Initial display
 showTodos();
-
-
-// todosDiv.innerHTML = `Hi ${todos[0].title}`;
-
-{/* <div>
-    <div>
-        <p></p>
-        <button></button>
-        <button></button>
-    </div>
-</div> */}
