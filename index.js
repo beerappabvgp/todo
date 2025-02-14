@@ -16,7 +16,7 @@ const showTodos = () => {
             const div = document.createElement("div");
             const deleteButton = document.createElement("button");
             const updateButton = document.createElement("button");
-
+            div.classList.add("showTodo")
             deleteButton.innerText = "Delete";
             updateButton.innerText = "Update";
 
@@ -25,9 +25,12 @@ const showTodos = () => {
             updateButton.addEventListener("click", () => updateTodo(todo.id));
 
             const p = document.createElement("p");
-            p.innerHTML = `${todo.title} - ${todo.description} (ID: ${todo.id})`;
+            p.innerHTML = `Title: ${todo.title}`;
+            const p1 = document.createElement("p");
+            p1.innerHTML = `Description: ${todo.description}`;
 
             div.appendChild(p);
+            div.appendChild(p1);
             div.appendChild(deleteButton);
             div.appendChild(updateButton);
             todosDiv.appendChild(div);
